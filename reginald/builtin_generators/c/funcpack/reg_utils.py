@@ -33,6 +33,10 @@ def generate(map: RegisterMap, name: NameGenerator, cli: CLI, opt):
     for block in map.register_block_templates.values():
         for template in block.registers.values():
             registers[block.name + template.name] = template
+    out.append(f"/**")
+    out.append(f" * \\defgroup {name.doxygroup_genericfuncs()} Generic register modify/pack/unpack utilities.")
+    out.append(f" * @{{")
+    out.append(f" */")
 
     # Generate generic modify, pack and unpack macro:
     out.append(f"/**")
@@ -90,7 +94,14 @@ def generate(map: RegisterMap, name: NameGenerator, cli: CLI, opt):
     out.append(f")(_struct_ptr_)")
     out.append(f"")
 
+    out.append(f"/**@}}")
+    out.append(f"")
+
     for reg_name, reg in registers.items():
+        out.append(f"/**")
+        out.append(f" * \\defgroup {name.doxygroup_regfuncs(reg_name)} {reg_name} register modify/pack/unpack utilities.")
+        out.append(f" * @{{")
+        out.append(f" */")
 
         packed_type = name.reg_packed_type(reg)
         struct_name = name.reg_struct_name(reg_name)
@@ -168,6 +179,9 @@ def generate(map: RegisterMap, name: NameGenerator, cli: CLI, opt):
             shift = field.bits.lsb_position()
             out.append(f"  .{member_name} = ({member_type}) ((val >> {shift}U) & 0x{mask:X}U), \\")
         out.append(f"}}")
+        out.append(f"")
+
+        out.append(f"/**@}}")
         out.append(f"")
 
     out.append(f"#endif /* {name.include_guard_macro(name.filename_reg_utils())} */")

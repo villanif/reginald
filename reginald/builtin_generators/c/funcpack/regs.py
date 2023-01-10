@@ -76,7 +76,11 @@ def generate(map: RegisterMap, name: NameGenerator, cli: CLI, _):
             continue
 
         # Generate register struct:
-        out.extend(doxy_comment(reg.docs, prefix=""))
+        yaml_doc = '\n'.join(reg.docs.multi_line(prefix=""))
+        struct_explain = f"Use \\ref {name.doxygroup_regfuncs(reg_name)} or \\ref {name.doxygroup_genericfuncs()} to convert this struct to and from it's packed binary form."
+        struct_doc = (struct_explain+'\n'+yaml_doc).strip()
+        struct_docs = Docs(brief="{reg.name} Register Struct", doc=struct_doc)
+        out.extend(doxy_comment(struct_docs, prefix=""))
         out.append(f"struct {name.reg_struct_name(reg_name)} {{")
         for field in reg.fields.values():
             type = name.reg_struct_member_type(reg_name, field)
