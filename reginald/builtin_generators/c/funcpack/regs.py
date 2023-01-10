@@ -82,8 +82,8 @@ def generate(map: RegisterMap, name: NameGenerator, cli: CLI, _):
         elif isinstance(reg, RegisterTemplate):
             struct_explain.append(f"Part of register block {reg.register_block_name}, at offset 0x{reg.offset:X}.")
         struct_explain.append(f"Use \\ref {name.doxygroup_regfuncs(reg_name)} or "
-                              "\\ref {name.doxygroup_genericfuncs()} to convert this struct to "
-                              "and from it's packed binary form.")
+                              f"\\ref {name.doxygroup_genericfuncs()} to convert this struct to "
+                              f"and from it's packed binary form.")
         struct_explain.extend(reg.docs.multi_line(prefix=""))
 
         struct_doc = "\n".join(struct_explain)
