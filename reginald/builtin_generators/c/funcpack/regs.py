@@ -76,9 +76,18 @@ def generate(map: RegisterMap, name: NameGenerator, cli: CLI, _):
             continue
 
         # Generate register struct:
-        yaml_doc = '\n'.join(reg.docs.multi_line(prefix=""))
-        struct_explain = f"Use \\ref {name.doxygroup_regfuncs(reg_name)} or \\ref {name.doxygroup_genericfuncs()} to convert this struct to and from it's packed binary form."
-        struct_doc = (struct_explain+'\n'+yaml_doc).strip()
+        struct_explain = []
+        if isinstance(reg, Register) and reg.adr is not None:
+            struct_explain.append(f"Address: 0x{reg.adr:X}")
+        elif isinstance(reg, RegisterTemplate):
+            struct_explain.append(f"Part of register block {reg.register_block_name}, at offset 0x{reg.offset:X}")
+        struct_explain.append(f"""\
+        Use \\ref {name.doxygroup_regfuncs(reg_name)} or \\ref {name.doxygroup_genericfuncs()} to convert this struct to and from it's packed binary form.\
+        """)
+        struct_explain.extend(reg.docs.multi_line(prefix=""))
+
+        struct_doc = "\n".join(struct_explain)
+
         struct_docs = Docs(brief=f"{reg_name} Register Struct", doc=struct_doc)
         out.extend(doxy_comment(struct_docs, prefix=""))
         out.append(f"struct {name.reg_struct_name(reg_name)} {{")
