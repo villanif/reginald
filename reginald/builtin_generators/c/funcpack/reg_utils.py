@@ -94,7 +94,7 @@ def generate(map: RegisterMap, name: NameGenerator, cli: CLI, opt):
     out.append(f")(_struct_ptr_)")
     out.append(f"")
 
-    out.append(f"/**@}}")
+    out.append(f"/** @}} */")
     out.append(f"")
 
     for reg_name, reg in registers.items():
@@ -181,7 +181,7 @@ def generate(map: RegisterMap, name: NameGenerator, cli: CLI, opt):
         out.append(f"}}")
         out.append(f"")
 
-        out.append(f"/**@}}")
+        out.append(f"/** @}} */")
         out.append(f"")
 
     out.append(f"#endif /* {name.include_guard_macro(name.filename_reg_utils())} */")
